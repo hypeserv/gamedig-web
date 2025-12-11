@@ -1,0 +1,24 @@
+{
+  "name": "gamedig-web",
+  "version": "1.0.0",
+  "description": "A simple gamedig api server for docker deployment.",
+  "main": "index.js",
+  "license": "Apache-2.0",
+  "scripts": {
+    "run": "node index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/hypeserv/gamedig-web.git"
+  },
+  "private": true,
+  "dependencies": {
+    "express": "^5.2.1",
+    "gamedig": "^5.3.2"
+  },
+  "devDependencies": {
+    "@types/express": "^5.0.6",
+    "@types/gamedig": "^5.0.3",
+    "@types/node": "^25.0.0"
+  }
+}
