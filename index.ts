@@ -65,20 +65,27 @@ app.get("/query/:type", async (req, res) => {
                 (queryOptions as any)[key] = n;
             }
         } else if (booleanKeys.has(key)) {
-            // Accept "true"/"1" or "false"/"0"
             const v = String(value).toLowerCase();
             if (v === "true" || v === "1") {
                 (queryOptions as any)[key] = true;
             } else if (v === "false" || v === "0") {
                 (queryOptions as any)[key] = false;
             }
-        } else if (stringKeys.has(key)) {
-            (queryOptions as any)[key] = String(value);
         }
     }
 
+
     try {
         const result = await GameDig.query(queryOptions);
+
+        // Handle ?raw=true logic
+        const rawParam = String(req.query.raw || "").toLowerCase();
+        const sendRaw = rawParam === "true" || rawParam === "1";
+
+        if (!sendRaw && result && typeof result === "object") {
+            delete (result as any).raw;
+        }
+
         return res.json(result);
     } catch (err: any) {
         return res.status(502).json({
@@ -87,6 +94,7 @@ app.get("/query/:type", async (req, res) => {
             details: err?.message ?? String(err),
         });
     }
+
 });
 
 // 404 fallback
