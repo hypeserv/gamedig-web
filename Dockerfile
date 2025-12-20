@@ -8,6 +8,7 @@ RUN npm ci
 
 COPY tsconfig*.json ./
 COPY . .
+RUN npm i -D typescript
 RUN npx tsc
 
 # ---- runtime ----
