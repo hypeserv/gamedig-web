@@ -1,12 +1,25 @@
-FROM node:lts as build
-LABEL authors="flexusma, onesrv"
-
-COPY . .
-RUN npm i && npm install typescript -g
-RUN tsc
-
-FROM node:lts-alpine as deploy
-COPY --from=build ./ /app
+# ---- build ----
+FROM node:lts-alpine AS build
+LABEL authors="hypeserv"
 WORKDIR /app
 
-ENTRYPOINT ["node", "./dist/index.js"]
+COPY package*.json ./
+RUN npm ci
+
+COPY tsconfig*.json ./
+COPY src ./src
+RUN npm run build
+
+# ---- runtime ----
+FROM node:lts-alpine AS deploy
+WORKDIR /app
+ENV NODE_ENV=production
+
+# only copy what runtime needs
+COPY package*.json ./
+RUN npm ci --omit=dev && npm cache clean --force
+
+COPY --from=build /app/dist ./dist
+USER node
+
+ENTRYPOINT ["node", "dist/index.js"]
