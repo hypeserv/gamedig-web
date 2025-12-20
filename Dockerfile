@@ -8,7 +8,7 @@ RUN npm ci
 
 COPY tsconfig*.json ./
 COPY . .
-RUN npm run build
+RUN npx tsc
 
 # ---- runtime ----
 FROM node:lts-alpine AS deploy
